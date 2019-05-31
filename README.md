@@ -20,5 +20,9 @@ $ docker-compose down
 
 ```
 $ docker-compose logs
-# アドレスが表示されるのでブラウザでアクセスする
+# 中略
+http://(hogehoge or 127.0.0.1):8888/?token=XXXXXXX
 ```
+
+表示されたアドレスを次の様な形にして，ブラウザでアクセスする
+`http://127.0.0.1:8888/?token=XXXXXXX`
