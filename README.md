@@ -26,3 +26,12 @@ http://(hogehoge or 127.0.0.1):8888/?token=XXXXXXX
 
 表示されたアドレスを次の様な形にして，ブラウザでアクセスする
 `http://127.0.0.1:8888/?token=XXXXXXX`
+
+
+### データセットの配置
+
+データセットを`workspace/data/`下に置く
+
+### ソースコード
+
+ソースコードは`workspace/src/`下に置く
