@@ -28,10 +28,10 @@ http://(hogehoge or 127.0.0.1):8888/?token=XXXXXXX
 `http://127.0.0.1:8888/?token=XXXXXXX`
 
 
-### データセットの配置
+## データセットの配置
 
 データセットを`workspace/data/`下に置く
 
-### ソースコード
+## ソースコード
 
 ソースコードは`workspace/src/`下に置く
