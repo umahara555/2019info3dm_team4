@@ -56,7 +56,7 @@ def load_data():
 
     df_2 = df["Type2"][:801]
     df_2 = df_2.map(type_dict)
-    type2 = df_1.values
+    type2 = df_2.values
 
     X = images
     Y = (type1, type2)
