@@ -31,7 +31,7 @@ def _read_image(path):
     return np.array(img)
 
 def _read_images():
-    image_paths = glob.glob("../data/images/*")
+    image_paths = glob.glob("../../data/images/*")
     image_paths.sort()
 
     with Pool() as p:
@@ -41,10 +41,10 @@ def _read_images():
 
 def load_data():
     # load images
-    images = _read_images()
+    images = np.array(_read_images())
 
     # load type
-    df = pd.read_csv('../data/Pokemon.csv', sep=',')
+    df = pd.read_csv('../../data/Pokemon.csv', sep=',')
     df.drop_duplicates(subset='Number', inplace=True)
     df.reset_index(inplace=True, drop=True)
     ind = df[df['Type2'].isnull()]['Type2'].index
