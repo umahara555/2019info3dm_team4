@@ -4,6 +4,7 @@ import numpy as np
 import glob
 from matplotlib import pylab as plt
 from multiprocessing import Pool
+import time
 
 type_dict = {
     "Normal":0,
@@ -28,23 +29,28 @@ type_dict = {
 
 def _read_image(path):
     img = Image.open(path)
+    img = img.resize((64,64))
     return np.array(img)
 
 def _read_images():
-    image_paths = glob.glob("../../data/images/*")
+    image_paths = glob.glob("/workspace/data/images/*")
     image_paths.sort()
 
+    images_length = len(image_paths)
+    images = []
     with Pool() as p:
-        arr = p.map(_read_image, image_paths)
-
-    return arr
+        for image, i in zip(p.imap(_read_image, image_paths), range(images_length)):
+            print(f'\r{i}/{images_length}', end='')
+            images.append(image)
+        print(f'\r{images_length}/{images_length} done')
+    return np.array(images)
 
 def load_data():
     # load images
     images = np.array(_read_images())
 
     # load type
-    df = pd.read_csv('../../data/Pokemon.csv', sep=',')
+    df = pd.read_csv('/workspace/data/Pokemon.csv', sep=',')
     df.drop_duplicates(subset='Number', inplace=True)
     df.reset_index(inplace=True, drop=True)
     ind = df[df['Type2'].isnull()]['Type2'].index
