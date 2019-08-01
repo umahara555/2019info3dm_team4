@@ -48,6 +48,7 @@ def _read_images():
 def load_data():
     # load images
     images = np.array(_read_images())
+    images = img.convert('L')
 
     # load type
     df = pd.read_csv('/workspace/data/Pokemon.csv', sep=',')
