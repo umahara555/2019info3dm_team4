@@ -32,8 +32,8 @@ def _read_image(path):
     img = img.resize((64,64))
     return np.array(img)
 
-def _read_images():
-    image_paths = glob.glob("/workspace/data/images/*")
+def _read_images(path):
+    image_paths = glob.glob(path+'images/*')
     image_paths.sort()
 
     images_length = len(image_paths)
@@ -45,12 +45,12 @@ def _read_images():
         print(f'\r{images_length}/{images_length} done')
     return np.array(images)
 
-def load_data():
+def load_data(path='/workspace/data/'):
     # load images
-    images = np.array(_read_images())
+    images = np.array(_read_images(path))
 
     # load type
-    df = pd.read_csv('/workspace/data/Pokemon.csv', sep=',')
+    df = pd.read_csv(path+'Pokemon.csv', sep=',')
     df.drop_duplicates(subset='Number', inplace=True)
     df.reset_index(inplace=True, drop=True)
     ind = df[df['Type2'].isnull()]['Type2'].index
