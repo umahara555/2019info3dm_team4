@@ -26,4 +26,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Jupyter Notebook
+.ipynb_checkpoints
+
 workspace/data/*
