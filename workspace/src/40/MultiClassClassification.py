@@ -54,6 +54,13 @@ nb_classes = 18 # 正解のパターン数
 
 
 def get_model():
+    """
+    build a model.
+    
+    Returns :
+        model : 
+            CNN model.
+    """
     
     weight_decay = 1e-4
     model = Sequential()
@@ -105,6 +112,16 @@ def binary_acc(y_true, y_pred):
     return K.mean(flag, axis=-1)
 
 def train(X, y):
+    """
+    train a model.
+    
+    Args :
+        X list :
+            image data.
+        y list :
+            type data.
+    
+    """
     kf = KFold(n_splits=5, shuffle=False)
 
     score_average = []
@@ -156,6 +173,14 @@ def train(X, y):
 
 
 def save():
+    """
+    save a model.
+    
+    Returns :
+        model :
+            trained model.
+    """
+    
     #モデルの保存
     json_string = model.model.to_json()
     open('predict.json', 'w').write(json_string)
@@ -166,7 +191,14 @@ def save():
 
 
 
-def predict(image_pass):
+def predict(image_path):
+    """
+    predict pokemon's type.
+    
+    Args :
+        image_path str :
+            image's path.
+    """
 
     #保存したモデルの読み込み
     model = model_from_json(open('predict.json').read())
@@ -175,7 +207,7 @@ def predict(image_pass):
 
 
     #画像を読み込む
-    img = Image.open(image_pass)
+    img = Image.open(image_path)
     img = img.resize((64,64))
     img = img.convert('RGB')
     x = np.array(img)
