@@ -70,20 +70,5 @@ def load_data(path='/workspace/data/'):
 
     # load type
     type1, type2 = _read_types(path)
-    # df = pd.read_csv(path+'Pokemon.csv', sep=',')
-    # df.drop_duplicates(subset='Number', inplace=True)
-    # df.reset_index(inplace=True, drop=True)
-    # ind = df[df['Type2'].isnull()]['Type2'].index
-    # df.iloc[ind, 3] = df.iloc[ind, 2]
-    #
-    # df_1 = df["Type1"][:801]
-    # df_1 = df_1.map(type_dict)
-    # type1 = df_1.values
-    #
-    # df_2 = df["Type2"][:801]
-    # df_2 = df_2.map(type_dict)
-    # type2 = df_2.values
 
-    # X = images
-    # Y = (type1, type2)
     return images, (type1, type2)
