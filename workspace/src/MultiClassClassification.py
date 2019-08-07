@@ -222,4 +222,3 @@ def predict(image_path):
 
 
 train(X, y)
-
