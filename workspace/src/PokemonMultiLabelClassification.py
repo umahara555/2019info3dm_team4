@@ -1,3 +1,10 @@
+"""Pokemon Multi Label Classification
+
+ポケモンのタイプを予測する．
+多ラベル分類を用いた．
+
+"""
+
 from tensorflow.keras import regularizers, optimizers
 from tensorflow.keras import utils
 from tensorflow.keras.models import Sequential, model_from_json, model_from_yaml
@@ -9,6 +16,11 @@ from PIL import Image
 import glob
 import sys
 import dataset
+import os
+import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['KMP_WARNINGS'] = 'off'
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 
 # 画像の形状情報
@@ -28,9 +40,20 @@ BEST_WEIGHT_FILE_PATH = './pokemon_multi_label_classification_cnn_best_weight.hd
 
 
 def data_augmentation(images, labels):
-    '''
-    9倍
-    '''
+    """データを水増して返す．
+
+    与えられたデータを９倍に水増しして返す．
+    上下左右斜めに位置をずらす方法で水増しを行なっている．
+
+    Args:
+        images : 画像データ. Numpy array.
+        labels : ラベルデータ. Numpy array.
+
+    Returns:
+        x : 水増しされた画像データ. Numpy array.
+        y : ラベルデータ. Numpy array.
+
+    """
     new_images = []
     new_labels = []
     images_length = len(images)
@@ -62,17 +85,39 @@ def data_augmentation(images, labels):
     return np.array(new_images),np.array(new_labels)
 
 
-def data_shuffle(images,types):
+def data_shuffle(images,labels):
+    """データの並び順をシャッフルして返す．
+
+    引数で与えられたデータの並び順をシャッフルして返す．
+    imagesとtypesの対応するデータ同士の位置は同じになる．
+
+    Args:
+        images : 画像データ. Numpy array.
+        labels : ラベルデータ. Numpy array.
+
+    Returns:
+        x : シャッフルされた画像データ. Numpy array.
+        y : シャッフルされたラベルデータ. Numpy array.
+
+    """
     indices = np.arange(images.shape[0])
     x,y = [], []
     for i in indices:
         x.append(images[i])
-        y.append(types[i])
+        y.append(labels[i])
 
-    return np.array(x),np.array(y)
+    x = np.array(x)
+    y = np.array(y)
+    return x, y
 
 
 def generate_model():
+    """モデルを生成して返す
+
+    Returns:
+        model : 生成したモデルオブジェクト
+
+    """
     model = Sequential()
     model.add(Conv2D(32, (5, 5),
                      padding='same',
@@ -103,22 +148,42 @@ def generate_model():
     return model
 
 
-def generator(x, y, batch_size=32):
-    indices = np.arange(x.shape[0])
+def generator(images, labels, batch_size=32):
+    """データをバッチサイズ毎に渡すジェネレータ．
+
+    Args:
+        images : 画像データ. Numpy array.
+        labels : ラベルデータ. Numpy array.
+        batch_size : バッチサイズ. デフォルトは32.
+
+    Yields:
+        img_batch : バッチサイズ分の画像データ. Numpy array.
+        label_batch : バッチサイズ分のラベルデータ. Numpy array.
+
+    """
+    indices = np.arange(images.shape[0])
     while True:
         img_cahce, label_cache = [], []
         np.random.shuffle(indices)
         for i in indices:
-            img_cahce.append(x[i])
-            label_cache.append(y[i])
+            img_cahce.append(images[i])
+            label_cache.append(labels[i])
             if len(img_cahce) == batch_size:
-                X_batch = np.array(img_cahce)
-                Y_batch = np.array(label_cache)
+                img_batch = np.array(img_cahce)
+                label_batch = np.array(label_cache)
                 img_cahce, label_cache = [], []
-                yield X_batch, Y_batch
+                yield img_batch, label_batch
 
 
 def fit(raw_images, type1, type2):
+    """モデルをトレーニングする.
+
+    Args:
+        raw_images : 学習データ. Numpy array.
+        type1 : ラベルデータ１. Numpy array.
+        type2 : ラベルデータ２. Numpy array.
+
+    """
     # 前処理
     images = raw_images.astype('float32') / 255.0
     type1_c = utils.to_categorical(type1, IMG_CLASSES)
@@ -159,12 +224,12 @@ def fit(raw_images, type1, type2):
 
     history = History()
 
-    model.fit_generator(generator=generator(x=img_train,
-                                            y=type_train,
+    model.fit_generator(generator=generator(images=img_train,
+                                            labels=type_train,
                                             batch_size=BATCH_SIZE),
                         steps_per_epoch=len(img_train)//BATCH_SIZE,
-                        validation_data=generator(x=img_valid,
-                                                  y=type_valid,
+                        validation_data=generator(images=img_valid,
+                                                  labels=type_valid,
                                                   batch_size=BATCH_SIZE),
                         validation_steps=len(img_valid)//BATCH_SIZE,
 #                         class_weight=class_weight,
@@ -174,6 +239,12 @@ def fit(raw_images, type1, type2):
 
 
 def predict(image):
+    """予測を行い,結果を表示する.
+
+    Args:
+        image : 画像データ. Numpy array.
+
+    """
     # 学習済みモデルとパラメータの呼び出し
     json_string = open(MODEL_FILE_PATH, 'r').read()
     model = model_from_json(json_string)
@@ -195,12 +266,6 @@ def predict(image):
 
 
 if __name__ == '__main__':
-    import os
-    import tensorflow as tf
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-    os.environ['KMP_WARNINGS'] = 'off'
-    tf.logging.set_verbosity(tf.logging.ERROR)
-
     args = sys.argv
     if len(args) >= 2:
         if args[1] == 'fit':
