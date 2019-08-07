@@ -1,3 +1,8 @@
+"""
+ポケモン画像とタイプデータに対して決定技を用い、ランダムフォレストで学習を行う。
+dataset.py からデータをロードし、モデルに合わせて学習データを生成する。
+モデルを構築し、学習を行う。結果の可視化を行う。
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
@@ -5,29 +10,30 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 import numpy as np
 import dataset
 
-
+#データのロード
 X, Y = dataset.load_data()
-
+#タイプのラベル
 pokemon_labels = np.array([
     "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting",
     "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon",
     "Dark", "Steel", "Fairy"
 ])
 
+#Type1のみ取得
 y = Y[0]
-#Type1しか取ってない
+#学習データとテストデータの生成
 x_train = X[0:700]
 y_train = y[0:700]
 x_test = X[701:]
 y_test = y[701:]
-
+#backendの違いによる次元数の入力型の調整
 x_train = x_train.reshape(
     x_train.shape[0], x_train.shape[1] * x_train.shape[2] * x_train.shape[3])
 
 x_test = x_test.reshape(x_test.shape[0],
                         x_test.shape[1] * x_test.shape[2] * x_test.shape[3])
 
-
+#モデルの構築
 clf = RandomForestClassifier(
     bootstrap=True,
     class_weight=None,
