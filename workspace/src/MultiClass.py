@@ -1,21 +1,29 @@
+"""
+ポケモン画像とタイプデータに対して多クラス分類を行う。
+dataset.py からデータをロードし、モデルに合わせて学習データを生成する。
+モデルを構築し、学習を行う。結果の可視化を行う。
+"""
 import keras
 import tensorflow as tf
 import dask
 from keras.models import Sequential
 from keras.layers import Dense
 import dataset
+#データのロード
 X, Y = dataset.load_data()
 import numpy as np
 import matplotlib.pyplot as plt
 
+#タイプのラベル
 pokemon_labels = np.array([
     "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting",
     "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon",
     "Dark", "Steel", "Fairy"
 ])
 
+#Type1のみ取得
 y = Y[0]
-#Type1しか取ってない
+#トレインデータとテストデータの生成
 x_train = X[0:700]
 y_train = y[0:700]
 x_test = X[701:]
@@ -31,7 +39,7 @@ from keras.utils import np_utils
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-# backendの違いによる次元数の入力型の調整(おまじない)
+# backendの違いによる次元数の入力型の調整
 from keras import backend as K
 if K.image_data_format() == 'channels_first':
     X_train = X_train.reshape(X_train.shape[0], img_channels, img_rows,
@@ -46,6 +54,7 @@ else:
 
 
 from keras.layers import Dropout, Flatten, Conv2D, MaxPooling2D
+#モデルの構築
 model = Sequential()
 model.add(
     Conv2D(
@@ -71,10 +80,8 @@ model.add(Dropout(0.25))
 model.add(Conv2D(512, kernel_size=(3, 3), padding='same', activation="relu"))
 model.add(Conv2D(512, kernel_size=(3, 3), padding='same', activation="relu"))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
 
 model.add(Flatten())
-# model.add(Dense(500, activation='relu'))
 model.add(Dropout(0.25))
 model.add(Dense(18, activation='softmax'))
 
@@ -98,6 +105,7 @@ score = model.evaluate(X_test, Y_test, verbose=0)
 print('Test score:', score[0])  # 損失関数の値
 print('Test accuracy:', score[1])  # 精度(98%強)
 
+#結果の可視化
 fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 ax[0].set_title('Training performance (Loss)')
 ax[0].plot(history.epoch, history.history['loss'], label='loss')
