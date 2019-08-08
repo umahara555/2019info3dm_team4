@@ -91,7 +91,7 @@ def _read_types(path):
     print(f'\rloading types data ... done')
     return type1, type2
 
-def load_data(path='/workspace/data/'):
+def load_data(path='./data/'):
     """データを読み込んで返す.
 
     渡されたパスから学習時に使用するデータを元データから整形して出力する.
