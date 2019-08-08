@@ -3,6 +3,31 @@
 ポケモンのタイプを予測する．
 多ラベル分類を用いた．
 
+Example:
+    学習時には./data/以下に学習用データを設置しておく.
+
+    学習の実行
+
+        $ python PokemonMultiLabelClassification.py fit
+
+    予測の実行
+
+        $ python PokemonMultiLabelClassification.py predict <filepath>
+
+Attributes:
+    IMG_ROWS (int) : モデルに入力する画像の横幅. デフォルトは64.
+    IMG_COLS (int) : モデルに入力する画像の縦幅. デフォルトは64.
+    IMG_CHANNELS (int) : モデルに入力する画像のチャンネル数. デフォルトは3.
+    IMG_CLASSES (int) : 学習するクラスの数. デフォルトは18.
+    BATCH_SIZE (int) : 学習時のバッチサイズ. デフォルトは32.
+    EPOCHS (int) : 学習時のエポック数. デフォルトは10.
+    MODEL_FILE_PATH (str) : モデル保存時のファイル名
+    INIT_WEIGHT_FILE_PATH (str) : 学習前のモデルのパラメータ保存時のファイル名
+    BEST_WEIGHT_FILE_PATH (str) : ベストスコアのパラメータ保存時のファイル名
+
+Todo:
+    * 学習時に設定するClassWeight算出の実装
+
 """
 
 from tensorflow.keras import regularizers, optimizers
@@ -16,6 +41,8 @@ from PIL import Image
 import glob
 import sys
 import dataset
+
+# 各種不要なログの表示を無効
 import os
 import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
