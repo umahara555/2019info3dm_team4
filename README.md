@@ -65,3 +65,5 @@ $ python RandomForest.py
 連絡先 : e175761@ie.u-ryukyu.ac.jp
 
 ## Licence
+
+[MIT Licence](https://github.com/umahara555/2019info3dm_team4/blob/master/LICENSE)
