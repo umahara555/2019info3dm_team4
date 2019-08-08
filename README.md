@@ -15,10 +15,18 @@
 - Python 3.x
 - Anaconda
 
-## インストール
+## セットアップ
 
+ソースのクローン
 ```
 $ git clone https://github.com/umahara555/2019info3dm_team4.git
+```
+
+上記からダウンロードしたデータセットを以下の様に配置する．
+```
+data
+├── Pokemon.csv
+└── images
 ```
 
 ## 実行方法
