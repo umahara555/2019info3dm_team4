@@ -13,7 +13,8 @@
 ## 動作環境
 
 - Python 3.x
-- Anaconda
+- Tensorflow
+- Keras
 
 ## セットアップ
 
